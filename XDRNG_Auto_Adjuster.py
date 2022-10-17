@@ -59,7 +59,7 @@ class TransitionToQuickBattle():
     
     def run(self):
         # SWリセットする
-        self.__command.sw_reset()
+        self.sw_reset()
         # 起動画面から移動する。
         while not self.__command.isContainTemplate(nintendo, threshold=0.9, use_gray=False, show_value=False):
             self.__command.press(Button.A, wait=0.5)
@@ -225,7 +225,7 @@ class GenerateNextTeamPair():
         self.__command.press(Button.B, wait=0.5)
         self.__command.press(Button.A, wait=1.0)
         # 1PとCOMの個体/HPを読み取る。
-        player , computer = self.__command.quick_battle_check_pokemon()
+        player , computer = self.quick_battle_check_pokemon()
         
         return (player, computer)
 
@@ -392,22 +392,14 @@ class xd_rng_auto_adjuster(ImageProcPythonCommand):
         USER_TSV = 2412 #xdrngtool.DEFAULT_TSV
         result = self.config(default_tsv = USER_TSV)
         
-        TransitionToQuickBattle     = TransitionToQuickBattle(self)
-        GenerateNextTeamPair        = GenerateNextTeamPair(self)
-        EnterWaitAndExitQuickBattle = EnterWaitAndExitQuickBattle(self)
-        SetCursorToSetting          = SetCursorToSetting(self)
-        ChangeSetting               = ChangeSetting(self)
-        Load                        = Load(self)
-        WriteReport                 = WriteReport(self)
-
         operations = (
-                    TransitionToQuickBattle(),
-                    GenerateNextTeamPair(),
-                    EnterWaitAndExitQuickBattle(),
-                    SetCursorToSetting(),
-                    ChangeSetting(),
-                    Load(),
-                    WriteReport(),
+                    TransitionToQuickBattle(self),
+                    GenerateNextTeamPair(self),
+                    EnterWaitAndExitQuickBattle(self),
+                    SetCursorToSetting(self),
+                    ChangeSetting(self),
+                    Load(self),
+                    WriteReport(self),
                 )
 
         execute_automation(operations, self.target_seeds, self.tsv, self.advances_by_opening_items)
