@@ -1,107 +1,25 @@
-# xdrngtool
+fileencoding=utf-8
+# XDRNG Auto Adjuster
 
-ポケモン XD 乱数調整用関数群
+## 概要
 
-```
->>> import xdrngtool
->>> print(xdrngtool.title_logo)
+Poke-Controller-Modifiedで使用するXD乱数消費自動プログラムです。
 
-                                            /^^        
- ___       _      __                /^^   /^^/^^^^^    
-| . \ ___ | |__ _/_/._ _ _  ___ ._ _ /^^ /^^ /^^   /^^ 
-|  _// . \| / // ._>| ' ' |/ . \| ' |  /^^   /^^    /^^
-|_|  \___/|_\_\\___.|_|_|_|\___/|_|_|/^^ /^^ /^^    /^^
-        Gale    of    Darkness      /^^   /^^/^^   /^^ 
-  -----===========================/^^========/^^^^^    
-```
+## 導入方法
 
-## Usage
+1.Poke-Controller-Modified(https://github.com/Moi-poke/Poke-Controller-Modified)を導入します。2022/10/17以降のversionが必要です。
+2.xddb(https://github.com/yatsuna827/xddb)をインストールします。
+3.xdrngtool(https://github.com/mukai1011/xdrngtool)をダウンロードします。
+4.SerialController\Commands\PythonCommands\ImageProcessingOnlyにxdrngtoolを置きます。
+5.SerialController\Commands\PythonCommands\ImageProcessingOnlyにXDRNG_Auto_Adjuster.pyを置きます。
+6.SerialController\Commands\PythonCommands\ImageProcessingOnly\xdrngtoolにある__init__.pyを本リポジトリのものに置き換えます。
+7.SerialController\TemplateにXDRNGのディレクトリを作成し、以下のリンクにある画像ファイルをすべて入れてください。これらのファイルは必要に応じて自分の環境で取得し、置き換える必要がある場合があります。
+　(https://drive.google.com/file/d/1vcYS97HPNSDmiuK-YuXq268XtlcZOhoa/view?usp=sharing)
 
-`.\tests\test_execute.py`も確認してください。
+## 使い方
 
----
-
-### 操作の注入
-
-`run`メソッドを持つ、以下のクラスを定義してください。クラス名は自由ですが、引数名および型、戻り値の型は固定です。
-
-それぞれの操作は、次の入力ができるようになるまでをワンセットとしてください。ある操作が実行された後、即座に次の操作が呼ばれても正常に動くよう、適切な待機処理などを挟んでください。
-
-```python
-class TransitionToQuickBattle():
-    """リセットし、1回いますぐバトル（さいきょう）を生成した画面まで誘導する。
-    """
-    def run(self):
-        pass
-
-class GenerateNextTeamPair():
-    """現在のいますぐバトル生成結果を破棄し、再度生成する。
-    """
-    def run(self) -> TeamPair:
-        pass
-
-class EnterWaitAndExitQuickBattle():
-    """「このポケモンで　はじめてもよいですか？」「はい」からいますぐバトルを開始し、降参「はい」まで誘導。timedelta時間待機した後、いますぐバトルを降参し、1回いますぐバトルを生成する。
-    """
-    def run(self, td: timedelta):
-        pass
-
-class SetCursorToSetting():
-    """いますぐバトル生成済み画面から、「せってい」にカーソルを合わせる。
-    """
-    def run(self):
-        pass
-
-class ChangeSetting():
-    """「せってい」にカーソルが合った状態から、設定を変更して保存、「せってい」にカーソルを戻す。
-    """
-    def run(self):
-        pass
-
-class Load():
-    """「せってい」にカーソルが合った状態からロードし、メニューを開き「レポート」にカーソルを合わせる。
-    """
-    def run(self):
-        pass
-
-class WriteReport():
-    """「レポート」にカーソルが合った状態から、レポートを書き、「レポート」にカーソルを戻す。
-    """
-    def run(self):
-        pass
-```
-
-pokecon で使用する場合は、`__init__`で PythonCommand を与えればよいでしょう。
-
-```python
-class TransitionToQuickBattle():
-    def __init__(self, command):
-        self.__command = command
-    def run(self):
-        self.__command.press()
-        # ...
-
-class HogeCommand(ImageProcPythonCommand):
-    def do(self):
-        transition_to_quick_battle = TransitionToQuickBattle(self)
-        # ...
-```
-
-これらの操作を所定の順番でタプルに詰め、`execute_automation`に与えます。
-
-```python
-operations = (
-    TransitionToQuickBattle(),
-    GenerateNextTeamPair(),
-    EnterWaitAndExitQuickBattle(),
-    SetCursorToSetting(),
-    ChangeSetting(),
-    Load(),
-    WriteReport(),
-)
-
-execute_automation(operations, target_seeds, tsv, advances_by_opening_items)
-```
+1.Poke-Controller-ModifiedでPython CommandにあるXDRNG自動消費 v.x.x.xを選択し、Startをクリックします。
+2.目標seed、tsv、もちもの消費を入力しokをクリックします。
 
 ### 目標seed
 
@@ -125,12 +43,19 @@ execute_automation(operations, target_seeds, tsv, advances_by_opening_items)
 ## Reference
 
 - [xddb](https://github.com/yatsuna827/xddb)
+- [xdrngtool](https://github.com/mukai1011/xdrngtool)
 - [XDSeedSorter](https://github.com/mukai1011/XDSeedSorter)
 
-## Python わからん
+## ライセンスについて
 
-```powershell
-# test
-pip install -e .
-poetry run python .\tests\test_hoge.py
-```
+複製・再頒布：可能
+改変：可能
+改変部分のソース公開：不要
+他のコードと組み合わせた場合他のコードのソース公開：不要
+商用利用：禁止(本項目のみ、本プログラムからの派生物すべてに適用してください。)
+(今後MITライセンスに変更する可能性があります。)
+
+## 謝辞
+以下のプログラム作成者の方々に御礼申し上げます。
+yatsuna827(https://github.com/yatsuna827)
+mukai1011(https://github.com/mukai1011)
